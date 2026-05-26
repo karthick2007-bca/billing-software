@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/local_db.dart';
+import '../services/update_checker.dart';
 import '../widgets/common.dart';
 import 'students/students_screen.dart';
 import 'fees/fee_structure_screen.dart';
@@ -311,7 +312,73 @@ class _DashboardHomeState extends State<_DashboardHome> {
   void initState() {
     super.initState();
     _load();
+    _checkUpdate();
   }
+
+  Future<void> _checkUpdate() async {
+    final info = await UpdateChecker.checkForUpdate();
+    if (info != null && mounted) _showUpdateDialog(info);
+  }
+
+  void _showUpdateDialog(UpdateInfo info) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: AppColors.successFaded, borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.system_update_rounded, color: AppColors.success, size: 22),
+          ),
+          const SizedBox(width: 12),
+          const Text('New Update Available!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        ]),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            _versionChip('Current', info.currentVersion, AppColors.textMuted, AppColors.mutedFaded),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Icon(Icons.arrow_forward_rounded, size: 16, color: AppColors.textMuted)),
+            _versionChip('Latest', info.latestVersion, AppColors.success, AppColors.successFaded),
+          ]),
+          if (info.releaseNotes.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(8), border: Border.all(color: AppColors.border)),
+              child: Text(info.releaseNotes, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            ),
+          ],
+          const SizedBox(height: 10),
+          const Text('Download the new version and replace your current .exe file.', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+        ]),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Later', style: TextStyle(color: AppColors.textMuted)),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.download_rounded, size: 16),
+            label: const Text('Download Now'),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.success, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+            onPressed: () {
+              Navigator.pop(context);
+              UpdateChecker.openDownloadPage(info.downloadUrl);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _versionChip(String label, String version, Color color, Color bg) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+    child: Column(children: [
+      Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600)),
+      Text('v$version', style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w700)),
+    ]),
+  );
 
   Future<void> _load() async {
     setState(() { _loading = true; _error = ''; });
@@ -472,16 +539,7 @@ class _DashboardHomeState extends State<_DashboardHome> {
             ),
             const SizedBox(height: 20),
 
-            // ── Quick Actions ──
-            const Text('Quick Actions', style: AppTextStyles.h3),
-            const SizedBox(height: 10),
-            Wrap(spacing: 10, runSpacing: 10, children: [
-              _QuickAction('Add Student',      Icons.person_add_rounded,    AppColors.primary),
-              _QuickAction('Record Payment',   Icons.payments_rounded,      AppColors.success),
-              _QuickAction('Generate Challan', Icons.receipt_long_rounded,  AppColors.accent),
-              _QuickAction('View Reports',     Icons.bar_chart_rounded,     AppColors.warning),
-            ]),
-            const SizedBox(height: 24),
+            const SizedBox(height: 4),
 
             // ── Two bottom frames ──
             Row(

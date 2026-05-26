@@ -59,11 +59,6 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
             icon: const Icon(Icons.picture_as_pdf), label: const Text('PDF'),
             onPressed: _exportPdf,
           ),
-          const SizedBox(width: 4),
-          OutlinedButton.icon(
-            icon: const Icon(Icons.table_chart), label: const Text('Excel'),
-            onPressed: _exportExcel,
-          ),
         ]),
         const SizedBox(height: 10),
         Row(children: [
@@ -119,7 +114,7 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
                 child: const Text('LOW', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
               ),
             ]),
-            subtitle: Text('Code: ${it['item_code']} | Cat: ${it['category']} | Unit: ${it['unit']} | Supplier: ${it['supplier_name'] ?? '-'}'),
+            subtitle: Text('Code: ${it['item_code']} | Cat: ${it['category']} | Unit: ${it['unit']}'),
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text('Stock: ${it['current_stock']}', style: TextStyle(fontWeight: FontWeight.bold, color: isLow ? AppColors.danger : AppColors.success)),
@@ -182,7 +177,7 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
           leading: const Icon(Icons.warning, color: AppColors.danger, size: 18),
           title: Text(i['name']),
           subtitle: Text('Current: ${i['current_stock']} | Reorder: ${i['reorder_level']}'),
-          trailing: Text(i['supplier_name'] ?? '', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+          trailing: const SizedBox.shrink(),
         )).toList())),
       ],
     ]));
@@ -195,7 +190,7 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
     final unit = TextEditingController(text: item?['unit'] ?? 'nos');
     final opening = TextEditingController(text: item?['opening_stock']?.toString() ?? '0');
     final reorder = TextEditingController(text: item?['reorder_level']?.toString() ?? '0');
-    final supplier = TextEditingController(text: item?['supplier_name'] ?? '');
+
     final fk = GlobalKey<FormState>();
     showDialog(context: context, builder: (ctx) => AlertDialog(
       title: Text(item == null ? 'Add Store Item' : 'Edit Item'),
@@ -206,7 +201,6 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
         _tf(unit, 'Unit (nos/kg/litre)'),
         if (item == null) _tf(opening, 'Opening Stock', num: true),
         _tf(reorder, 'Reorder Level', num: true),
-        _tf(supplier, 'Supplier Name'),
       ])))),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
@@ -215,7 +209,7 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
           final body = {
             'item_code': code.text, 'name': name.text, 'category': cat.text,
             'unit': unit.text, 'opening_stock': double.tryParse(opening.text) ?? 0,
-            'reorder_level': double.tryParse(reorder.text) ?? 0, 'supplier_name': supplier.text,
+            'reorder_level': double.tryParse(reorder.text) ?? 0,
           };
           if (item == null) {
             await ApiService.post('/inventory/store/items', body);
@@ -264,21 +258,19 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
   }
 
   Future<void> _exportPdf() async {
-    final headers = ['Code', 'Name', 'Category', 'Unit', 'Stock', 'Reorder', 'Supplier'];
+    final headers = ['Code', 'Name', 'Category', 'Unit', 'Stock', 'Reorder'];
     final rows = _items.map((i) => [
       i['item_code'].toString(), i['name'].toString(), i['category'].toString(),
       i['unit'].toString(), i['current_stock'].toString(), i['reorder_level'].toString(),
-      i['supplier_name']?.toString() ?? '-',
     ]).toList();
     await InvExportService.exportPdf('Store Inventory Report', headers, rows);
   }
 
   Future<void> _exportExcel() async {
-    final headers = ['Code', 'Name', 'Category', 'Unit', 'Stock', 'Reorder', 'Supplier'];
+    final headers = ['Code', 'Name', 'Category', 'Unit', 'Stock', 'Reorder'];
     final rows = _items.map((i) => [
       i['item_code'].toString(), i['name'].toString(), i['category'].toString(),
       i['unit'].toString(), i['current_stock'].toString(), i['reorder_level'].toString(),
-      i['supplier_name']?.toString() ?? '-',
     ]).toList();
     final path = await InvExportService.exportExcel('Store Inventory Report', headers, rows);
     if (mounted) showSnack(context, 'Saved: $path');

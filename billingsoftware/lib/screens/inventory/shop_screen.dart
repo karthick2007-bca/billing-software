@@ -56,8 +56,6 @@ class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateM
           ),
           const SizedBox(width: 8),
           OutlinedButton.icon(icon: const Icon(Icons.picture_as_pdf), label: const Text('PDF'), onPressed: _exportPdf),
-          const SizedBox(width: 4),
-          OutlinedButton.icon(icon: const Icon(Icons.table_chart), label: const Text('Excel'), onPressed: _exportExcel),
         ]),
         const SizedBox(height: 10),
         Row(children: [
