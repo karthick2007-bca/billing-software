@@ -165,9 +165,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('Welcome back', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.5)),
-              const SizedBox(height: 4),
-              const Text('SREE SOWDAMBIKA INTERNATIONAL SCHOOL', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.primary, letterSpacing: 0.5)),
-              const Text('(CBSE)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary)),
               const SizedBox(height: 6),
               const Text('Sign in to your account to continue', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
               const SizedBox(height: 28),
