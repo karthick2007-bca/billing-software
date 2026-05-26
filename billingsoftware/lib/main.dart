@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_provider.dart';
-import 'services/update_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 
@@ -23,7 +22,7 @@ class SchoolBillingApp extends StatelessWidget {
       theme: _buildTheme(),
       home: Consumer<AuthProvider>(
         builder: (_, auth, __) => auth.loggedIn
-            ? const _DashboardWithUpdateCheck()
+            ? const DashboardScreen()
             : const LoginScreen(),
       ),
     );
@@ -176,23 +175,4 @@ class SchoolBillingApp extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DashboardWithUpdateCheck extends StatefulWidget {
-  const _DashboardWithUpdateCheck();
-  @override
-  State<_DashboardWithUpdateCheck> createState() => _DashboardWithUpdateCheckState();
-}
-
-class _DashboardWithUpdateCheckState extends State<_DashboardWithUpdateCheck> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      UpdateService.checkForUpdate(context);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => const DashboardScreen();
 }

@@ -115,37 +115,119 @@ class _UpdateDialogState extends State<_UpdateDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Row(children: [
-      Icon(Icons.system_update, color: Color(0xFF1565C0)),
-      SizedBox(width: 8),
-      Text('Update Available'),
-    ]),
-    content: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text('A new version ${widget.version} is available.'),
-      const SizedBox(height: 8),
-      const Text('Please update to get the latest features and fixes.',
-          style: TextStyle(color: Colors.grey, fontSize: 13)),
-      if (_downloading) ...[ 
-        const SizedBox(height: 16),
-        LinearProgressIndicator(value: _progress),
-        const SizedBox(height: 8),
-        Text(_status, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-      ],
-    ]),
-    actions: _downloading
-        ? []
-        : [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Later'),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    contentPadding: EdgeInsets.zero,
+    content: Container(
+      width: 380,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0F2744), Color(0xFF1E3A5F)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
-            ElevatedButton(
-              onPressed: _download,
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1565C0),
-                  foregroundColor: Colors.white),
-              child: const Text('Update Now'),
-            ),
-          ],
+            child: Column(children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.system_update_rounded, color: Colors.white, size: 28),
+              ),
+              const SizedBox(height: 12),
+              const Text('Update Available', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 4),
+              Text('Version ${widget.version} is ready', style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 13)),
+            ]),
+          ),
+          // Body
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(children: [
+              if (!_downloading) ...[
+                const Text(
+                  'A new version of School Billing Software is available. Update now to get the latest features and bug fixes.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.5),
+                ),
+                const SizedBox(height: 24),
+                Row(children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF64748B),
+                        side: const BorderSide(color: Color(0xFFE2E8F0)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: const Text('Later', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _download,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E3A5F),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: const Text('Update Now', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ]),
+              ] else ...[
+                const SizedBox(height: 4),
+                Text(_status, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF1E3A5F))),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: _progress > 0 ? _progress : null,
+                    minHeight: 8,
+                    backgroundColor: const Color(0xFFE2E8F0),
+                    valueColor: const AlwaysStoppedAnimation(Color(0xFF1E3A5F)),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _progress > 0 ? '${(_progress * 100).toStringAsFixed(0)}%' : 'Please wait...',
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                ),
+                if (_status.contains('complete') || _status.contains('failed')) ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E3A5F),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: const Text('Close', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ],
+              ],
+            ]),
+          ),
+        ],
+      ),
+    ),
   );
 }

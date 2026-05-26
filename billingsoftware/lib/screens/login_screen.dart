@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
+import '../services/update_service.dart';
 import '../widgets/common.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,6 +27,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     _slideAnim = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
         .animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut));
     _animCtrl.forward();
+    // Check for update on login screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateService.checkForUpdate(context);
+    });
   }
 
   @override
