@@ -81,7 +81,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           child: const Icon(Icons.school_rounded, color: Colors.white, size: 24),
                         ),
                         const SizedBox(width: 12),
-                        const Text('SchoolBill', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.3)),
+                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          const Text('SchoolBill', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.3)),
+                          Text('SREE SOWDAMBIKA INTERNATIONAL SCHOOL (CBSE)', style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.3)),
+                        ]),
                       ]),
                       const SizedBox(height: 80),
                       const Text('Manage your school\nfinances with ease.', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w700, height: 1.3, letterSpacing: -0.5)),
@@ -162,6 +165,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('Welcome back', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.5)),
+              const SizedBox(height: 4),
+              const Text('SREE SOWDAMBIKA INTERNATIONAL SCHOOL', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.primary, letterSpacing: 0.5)),
+              const Text('(CBSE)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary)),
               const SizedBox(height: 6),
               const Text('Sign in to your account to continue', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
               const SizedBox(height: 28),

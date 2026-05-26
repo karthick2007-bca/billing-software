@@ -6,7 +6,7 @@ class UpdateChecker {
   // ── உங்கள் GitHub repo details இங்க மாத்துங்க ──
   static const _owner = 'karthick2007-bca';
   static const _repo  = 'billingsoftware';
-  static const _currentVersion = '0.9.0'; // pubspec version-உடன் match பண்ணுங்க
+  static const _currentVersion = '1.0.0'; // pubspec version-உடன் match பண்ணுங்க
 
   static Future<UpdateInfo?> checkForUpdate() async {
     try {
