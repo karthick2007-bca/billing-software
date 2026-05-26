@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 class UpdateService {
   // This URL points to version.json hosted on your GitHub repo (raw content)
   static const String _versionUrl =
-      'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/version.json';
+      'https://raw.githubusercontent.com/karthick2007-bca/billing-software/main/version.json';
 
   // Current app version — must match pubspec.yaml version
   static const String _currentVersion = '1.0.0';
